@@ -50,23 +50,7 @@
     <script src="https://cdn.jsdelivr.net/lodash/4.8.2/lodash.min.js"></script>
     <script>
       var raw = {{{rawData}}};
-
-      var labels = raw
-        .map(function(item) { return item.date })
-        .filter(function(item, position, self) { return self.indexOf(item) === position})
-        .map(function(item) { return moment.unix(item).format('HH:mm')});
-
-      var ldrValues = raw
-        .filter(function(item) { return item.sensor === 'LDR' })
-        .map(function(item) { return item.value });
-
-      var data = {
-        labels: labels,
-        datasets: [{ data: ldrValues }],
-      };
-
-      var ctx = document.getElementById("chart").getContext("2d");
-      var chart = new Chart(ctx).Line(data, { responsive: true });
     </script>
+    <script src="/bundle.js"></script>
   </body>
 </html>

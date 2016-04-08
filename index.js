@@ -12,6 +12,7 @@ var db = new Datastore({ filename: 'data.db', autoload: true });
 app.set('view engine', 'hbs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('static'));
 
 app.post('/', function (req, res) {
   console.log(req.body);
@@ -38,5 +39,5 @@ app.get('/', function (req, res) {
 });
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('Server listening on port 3000');
 });
