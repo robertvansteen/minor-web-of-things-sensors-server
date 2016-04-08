@@ -1,6 +1,3 @@
 apps:
   - script: index.js
     name: iot-sensors
-    watch:
-      - index.js
-      - views/
