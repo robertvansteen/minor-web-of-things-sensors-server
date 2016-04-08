@@ -32,7 +32,7 @@ app.post('/', function (req, res) {
 });
 
 app.get('/', function (req, res) {
-  db.find({}, function(error, docs) {
+  db.find({}).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
     res.render('results', { data: docs, rawData: JSON.stringify(docs) });
   });
 });
