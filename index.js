@@ -9,6 +9,7 @@ var app = express();
 // Set up the database.
 var db = new Datastore({ filename: 'data.db', autoload: true });
 
+app.set('view engine', 'hbs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -28,6 +29,12 @@ app.post('/', function (req, res) {
   });
 
   res.send('OK');
+});
+
+app.get('/', function (req, res) {
+  db.find({}, function(error, docs) {
+    res.render('results', { data: docs, rawData: JSON.stringify(docs) });
+  });
 });
 
 app.listen(3000, function () {
