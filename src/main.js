@@ -38,7 +38,7 @@ function getValues(data, sensor, chunkSize) {
 
   const chunks = values.reduce(chunker(chunkSize), []);
 
-  return chunks
+  return chunks;
 }
 
 /**
@@ -67,16 +67,16 @@ var gradient = ctx.createLinearGradient(0, 0, 0, 400);
 gradient.addColorStop(1, 'rgba(240,152,25, 0.4)');
 gradient.addColorStop(0, 'rgba(255,81,47, 1)');
 
-var ldrData = getValues(window.raw, 'LDR', 10)
+var ldrData = getValues(window.raw, 'LDR', 50)
   .map(median)
   .map(Math.round);
 
-var motionData = getValues(window.raw, 'Motion', 10)
+var motionData = getValues(window.raw, 'Motion', 50)
   .map(chunk => chunk.filter(item => item > 0))
   .map(chunk => chunk.length > 0 ? 1 : 0);
 
 var data = {
-  labels: getTimestamps(window.raw, 'LDR', 10),
+  labels: getTimestamps(window.raw, 'LDR', 50),
   datasets: [
     {
       data: ldrData,

@@ -1,3 +1,4 @@
+var moment = require('moment');
 var assert = require('assert');
 var Datastore = require('nedb');
 var express = require('express');
@@ -33,8 +34,19 @@ app.post('/', function (req, res) {
 });
 
 app.get('/', function (req, res) {
-  db.find({}).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
+  var now = moment().unix();
+  var yesterday = moment().subtract(1, 'day').unix();
+
+  db.find({ 'date': { $gte: yesterday } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
     res.render('results', { data: docs, rawData: JSON.stringify(docs) });
+  });
+});
+
+app.get('/raw', function (req, res) {
+  var last = moment().subtract(4, 'hour').unix();
+
+  db.find({ 'date': { $gte: last } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
+    res.render('raw', { data: docs, rawData: JSON.stringify(docs) });
   });
 });
 
