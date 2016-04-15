@@ -1,5 +1,5 @@
 .DS_Store
 node_modules
-data.db
+*.db
 static/bundle.js
 env.js
