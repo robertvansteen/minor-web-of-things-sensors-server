@@ -2,3 +2,4 @@
 node_modules
 data.db
 static/bundle.js
+env.js

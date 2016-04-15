@@ -1,0 +1,6 @@
+<h1>{{device._id}}</h1>
+
+<h2>Lights</h2>
+{{#each device.lights}}
+  <input type="checkbox" class="js-checkbox" {{#if this.value}}checked{{/if}}>
+{{/each}}

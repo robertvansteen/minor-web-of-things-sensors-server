@@ -1,0 +1,9 @@
+<h1>Dashboard</h1>
+
+<div class="list-group">
+  {{#each devices}}
+    <a href="/device/{{_id}}" class="list-group-item">
+      {{_id}}
+    </a>
+  {{/each}}
+</div>
