@@ -62,8 +62,9 @@ messageHandlers = {
 
   'lights/+id/status': function(packet, client, params) {
     var path = 'lights.' + params.id;
-    var value = parseInt(packet.payload.toString());
-    devices.update({ _id: client.id }, { $set: { [path]: { value: !!value } } });
+    var payload = JSON.parse(packet.payload.toString());
+    var value = parseInt(payload.value);
+    devices.update({ _id: client.id }, { $set: { [path]: { value: value } } });
   },
 };
 
