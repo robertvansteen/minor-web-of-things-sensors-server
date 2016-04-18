@@ -1,6 +1,11 @@
 <h1>{{device._id}}</h1>
 
 <h2>Lights</h2>
-{{#each device.lights}}
-  <input type="checkbox" class="js-checkbox" {{#if this.value}}checked{{/if}}>
-{{/each}}
+<!-- {{#each device.lights}} -->
+  <!-- <input type="checkbox" class="js-checkbox" {{#if this.value}}checked{{/if}}> -->
+<!-- {{/each}} -->
+
+<div id="strip" class="input-group colorpicker-component">
+    <input type="text" value="#00AABB" class="form-control" />
+    <span class="input-group-addon"><i></i></span>
+</div>
