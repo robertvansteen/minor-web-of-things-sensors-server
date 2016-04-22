@@ -66,6 +66,11 @@ messageHandlers = {
     devices.update({ _id: client.id }, { $set: { output: payload.devices } });
   },
 
+  '+device/register/input': function(packet, client) {
+    var payload = JSON.parse(packet.payload.toString());
+    devices.update({ _id: client.id }, { $set: { input: payload.devices } });
+  },
+
   '+device/input/+sensor': function(packet, client, params) {
     var payload = JSON.parse(packet.payload.toString());
     data.insert({ sensor: params.sensor, value: payload.value, date: moment().unix(), device: client.id });

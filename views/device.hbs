@@ -2,17 +2,26 @@
 
 <h2>Output</h2>
 {{#each device.output}}
-  {{label}}
-  <input type="checkbox" class="js-checkbox" data-output-id="{{id}}" data-topic="{{../device._id}}/output/{{id}}/set">
+  <div>
+    {{label}}
+    {{#if_eq type "switch"}}
+      <input type="checkbox" class="js-checkbox" data-output-id="{{id}}" data-topic="{{../device._id}}/output/{{id}}/set">
+    {{/if_eq}}
+    {{#if_eq type "strip"}}
+      <div class="strip input-group colorpicker-component" data-topic="{{../device._id}}/output/{{id}}/set">
+          <input type="text" value="#00AABB" class="form-control" />
+          <span class="input-group-addon"><i></i></span>
+      </div>
+    {{/if_eq}}
+  </div>
 {{/each}}
 
-<h2>LDR in chart</h2>
-<canvas id="chart"></canvas>
+<h2>Input</h2>
+{{#each device.input}}
+  {{label}}
+  <canvas class="chart" data-sensor="{{id}}"></div>
+{{/each}}
 
-<!-- <div id="strip" class="input-group colorpicker-component">
-    <input type="text" value="#00AABB" class="form-control" />
-    <span class="input-group-addon"><i></i></span>
-</div> -->
 
 <script>
   var device = {{{json device}}};

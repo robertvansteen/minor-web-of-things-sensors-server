@@ -11,11 +11,11 @@ pubsub.on('message', function(topic, message) {
   $(`[data-output-id=${id}]`).bootstrapSwitch('state', value);
 });
 
-// let onColorChange = _.debounce(event => {
-//   console.log('Changing color');
-//   const color = event.color.toRGB();
-//   pubsub.publish('lights/1/state', JSON.stringify({ r: color.r, g: color.g, b: color.b }));
-// }, 1000);
+let onColorChange = _.debounce(event => {
+  const topic = event.target.getAttribute('data-topic');
+  const color = event.color.toRGB();
+  pubsub.publish(topic, JSON.stringify({ r: color.r, g: color.g, b: color.b }));
+}, 1000);
 
 export default function() {
   var light = $('.js-checkbox').bootstrapSwitch();
@@ -30,6 +30,6 @@ export default function() {
     pubsub.publish(topic);
   });
 
-  // $('#strip').colorpicker()
-  //   .on('changeColor', onColorChange);
+  $('.strip').colorpicker()
+    .on('changeColor', onColorChange);
 }

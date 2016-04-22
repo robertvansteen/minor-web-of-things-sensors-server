@@ -11549,7 +11549,7 @@ function extend() {
 }
 
 },{}],75:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -11628,29 +11628,24 @@ function getTimestamps(data, sensor, chunkSize) {
   });
 }
 
-function init() {
-  var el = document.getElementById("chart");
-  if (!el) return false;
-
-  var ctx = document.getElementById("chart").getContext("2d");
+function createChart(el) {
+  var ctx = el.getContext("2d");
   var gradient = ctx.createLinearGradient(0, 0, 0, 400);
   gradient.addColorStop(1, 'rgba(240,152,25, 0.4)');
   gradient.addColorStop(0, 'rgba(255,81,47, 1)');
 
-  var ldrData = getValues(window.data, 'ldr', 50).map(median).map(Math.round);
+  var sensor = el.getAttribute('data-sensor');
 
-  var motionData = getValues(window.data, 'Motion', 50).map(function (chunk) {
-    return chunk.filter(function (item) {
-      return item > 0;
-    });
-  }).map(function (chunk) {
-    return chunk.length > 0 ? 1 : 0;
-  });
+  var data = getValues(window.data, sensor, 1).map(median).map(Math.round);
+
+  // var motionData = getValues(window.data, 'Motion', 50)
+  //   .map(chunk => chunk.filter(item => item > 0))
+  //   .map(chunk => chunk.length > 0 ? 1 : 0);
 
   var data = {
-    labels: getTimestamps(window.data, 'ldr', 50),
+    labels: getTimestamps(window.data, sensor, 50),
     datasets: [{
-      data: ldrData,
+      data: data,
       fillColor: gradient,
       strokeColor: 'rgba(255,81,47, 1)',
       pointColor: 'rgba(255,81,47, 1)',
@@ -11663,9 +11658,15 @@ function init() {
   var chart = new Chart(ctx).Line(data, {
     responsive: true,
     scaleOverride: true,
-    scaleSteps: 10,
-    scaleStartValue: 0,
-    scaleStepWidth: 100
+    scaleSteps: 15,
+    scaleStartValue: -20,
+    scaleStepWidth: 5
+  });
+}
+
+function init() {
+  $('.chart').each(function (index, el) {
+    createChart(el);
   });
 }
 
@@ -11691,8 +11692,7 @@ exports.default = function () {
     _pubsub2.default.publish(topic);
   });
 
-  // $('#strip').colorpicker()
-  //   .on('changeColor', onColorChange);
+  $('.strip').colorpicker().on('changeColor', onColorChange);
 };
 
 var _pubsub = require('./pubsub');
@@ -11714,11 +11714,11 @@ _pubsub2.default.on('message', function (topic, message) {
   $('[data-output-id=' + id + ']').bootstrapSwitch('state', value);
 });
 
-// let onColorChange = _.debounce(event => {
-//   console.log('Changing color');
-//   const color = event.color.toRGB();
-//   pubsub.publish('lights/1/state', JSON.stringify({ r: color.r, g: color.g, b: color.b }));
-// }, 1000);
+var onColorChange = _.debounce(function (event) {
+  var topic = event.target.getAttribute('data-topic');
+  var color = event.color.toRGB();
+  _pubsub2.default.publish(topic, JSON.stringify({ r: color.r, g: color.g, b: color.b }));
+}, 1000);
 
 },{"./pubsub":79}],77:[function(require,module,exports){
 'use strict';
