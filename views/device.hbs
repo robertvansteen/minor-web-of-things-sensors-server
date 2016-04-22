@@ -1,11 +1,20 @@
 <h1>{{device._id}}</h1>
 
-<h2>Lights</h2>
-<!-- {{#each device.lights}} -->
-  <!-- <input type="checkbox" class="js-checkbox" {{#if this.value}}checked{{/if}}> -->
-<!-- {{/each}} -->
+<h2>Output</h2>
+{{#each device.output}}
+  {{label}}
+  <input type="checkbox" class="js-checkbox" data-output-id="{{id}}" data-topic="{{../device._id}}/output/{{id}}/set">
+{{/each}}
 
-<div id="strip" class="input-group colorpicker-component">
+<h2>LDR in chart</h2>
+<canvas id="chart"></canvas>
+
+<!-- <div id="strip" class="input-group colorpicker-component">
     <input type="text" value="#00AABB" class="form-control" />
     <span class="input-group-addon"><i></i></span>
-</div>
+</div> -->
+
+<script>
+  var device = {{{json device}}};
+  var data = {{{json data}}};
+</script>

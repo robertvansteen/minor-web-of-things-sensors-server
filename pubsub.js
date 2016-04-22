@@ -1,5 +1,6 @@
 var env = require('./env');
 var mosca = require('mosca');
+var moment = require('moment');
 var Datastore = require('nedb');
 
 var data = require('./data');
@@ -15,15 +16,11 @@ var settings = {
   }
 };
 
-var topics = {
-  'register': 'onRegister',
-}
-
 var server = new mosca.Server(settings);
 server.on('ready', setup);
 
 function setup() {
-  console.log('Mosca server is up and running')
+  console.log('Mosca server is up and running on ' + env.PUBSUB_PORT);
 }
 
 server.on('clientConnected', function(client) {
@@ -56,12 +53,26 @@ server.on('published', function(packet, client) {
 });
 
 messageHandlers = {
-  'register': function(packet, client) {
-    devices.insert({ _id: client.id });
+  '+device/ping': function(packet, client) {
+    devices.update({ _id: client.id }, { $set: { last_ping: moment().unix() } });
   },
 
-  'lights/+id/status': function(packet, client, params) {
-    var path = 'lights.' + params.id;
+  '+device/register': function(packet, client) {
+    devices.update({ _id: client.id }, { $set: { last_ping: moment().unix() } }, { upsert: true });
+  },
+
+  '+device/register/output': function(packet, client) {
+    var payload = JSON.parse(packet.payload.toString());
+    devices.update({ _id: client.id }, { $set: { output: payload.devices } });
+  },
+
+  '+device/input/+sensor': function(packet, client, params) {
+    var payload = JSON.parse(packet.payload.toString());
+    data.insert({ sensor: params.sensor, value: payload.value, date: moment().unix(), device: client.id });
+  },
+
+  '+device/output/+id/status': function(packet, client, params) {
+    var path = 'output.' + params.id;
     var payload = JSON.parse(packet.payload.toString());
     var value = parseInt(payload.value);
     devices.update({ _id: client.id }, { $set: { [path]: { value: value } } });

@@ -1,3 +1,4 @@
+var hbs = require('hbs');
 var moment = require('moment');
 var assert = require('assert');
 var Datastore = require('nedb');
@@ -6,8 +7,8 @@ var pubsub = require('./pubsub');
 var bodyParser = require('body-parser');
 
 // Load data
-var data = require('./data');
-var devices = require('./devices');
+var dataDB = require('./data');
+var devicesDB = require('./devices');
 
 // Set up the server.
 var app = express();
@@ -18,6 +19,10 @@ app.set('view engine', 'hbs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('static'));
+
+hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
 
 app.post('/', function (req, res) {
   console.log(req.body);
@@ -41,7 +46,7 @@ app.get('/', function (req, res) {
   var now = moment().unix();
   var yesterday = moment().subtract(1, 'day').unix();
 
-  data.find({ 'date': { $gte: yesterday } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
+  dataDB.find({ 'date': { $gte: yesterday } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
     res.render('results', { data: docs, rawData: JSON.stringify(docs) });
   });
 });
@@ -49,35 +54,33 @@ app.get('/', function (req, res) {
 app.get('/raw', function (req, res) {
   var last = moment().subtract(4, 'hour').unix();
 
-  data.find({ 'date': { $gte: last } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
+  dataDB.find({ 'date': { $gte: last } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
     res.render('raw', { data: docs, rawData: JSON.stringify(docs) });
   });
 });
 
 app.get('/dashboard', function (req, res) {
-  devices.find({}, function(error, docs) {
+  devicesDB.find({}, function(error, docs) {
+    docs.map((doc) => {
+      doc.online = (moment().unix() < doc.last_ping + 600)
+      return doc;
+    });
     res.render('dashboard', { devices: docs });
   });
 });
 
 app.get('/device/:id', function (req, res) {
-    devices.find({ _id: req.params.id }, function(error, docs) {
-      res.render('device', { device: docs[0] });
+  var deviceId = req.params.id;
+  var now = moment().unix();
+  var yesterday = moment().subtract(1, 'day').unix();
+
+  devicesDB.findOne({ _id: deviceId }, function(error, device) {
+    if(!device) return res.send('404');
+
+    dataDB.find({ 'date': { $gte: yesterday }, 'device': deviceId }).sort({'date': 1, 'sensor': 1}).exec(function(error, data) {
+      res.render('device', { device, data });
     });
-});
-
-app.get('/lights/on', function (req, res) {
-    pubsub.publish({
-      topic: 'lights/1/state',
-      payload: JSON.stringify({ value: 1 }),
-    })
-});
-
-app.get('/lights/off', function (req, res) {
-    pubsub.publish({
-      topic: 'lights/1/state',
-      payload: JSON.stringify({ value: 0 }),
-    })
+  });
 });
 
 app.listen(3000, function () {

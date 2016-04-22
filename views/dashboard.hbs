@@ -4,6 +4,12 @@
   {{#each devices}}
     <a href="/device/{{_id}}" class="list-group-item">
       {{_id}}
+      
+      {{#if online}}
+        <span class="label label-success">Online</span>
+      {{else}}
+        <span class="label label-danger">Offline</span>
+      {{/if}}
     </a>
   {{/each}}
 </div>
