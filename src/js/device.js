@@ -7,8 +7,8 @@ device.output.map(output => pubsub.subscribe(`${device._id}/output/${output.id}`
 pubsub.on('message', function(topic, message) {
   const fragments = topic.split('/');
   const id = fragments[fragments.length - 1];
-  const value = !! JSON.parse(message.toString()).value;
-  $(`[data-output-id=${id}]`).bootstrapSwitch('state', value);
+
+  window.device.output.find(output => output.id === id);
 });
 
 let onColorChange = _.debounce(event => {

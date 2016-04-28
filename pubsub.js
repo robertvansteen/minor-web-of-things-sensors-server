@@ -2,6 +2,7 @@ var env = require('./env');
 var mosca = require('mosca');
 var moment = require('moment');
 var Datastore = require('nedb');
+var request = require('request');
 
 var data = require('./data');
 var devices = require('./devices');
@@ -73,6 +74,11 @@ messageHandlers = {
 
   '+device/input/+sensor': function(packet, client, params) {
     var payload = JSON.parse(packet.payload.toString());
+
+    if(payload.value > 50) {
+      request('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI');
+    }
+
     data.insert({ sensor: params.sensor, value: payload.value, date: moment().unix(), device: client.id });
   },
 
