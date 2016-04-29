@@ -90,10 +90,11 @@ messageHandlers = {
 };
 
 function checkDisturbance(device) {
-  var end = moment().unix();
-  var begin = moment().subtract(30, 'minutes').unix();
+  var now = moment().unix();
+  var measureTreshold = moment().subtract(10, 'minutes').unix();
+  var reportTreshold = moment().subtract(30, 'minutes').unix();
 
-  data.find({ date: { $gt: begin } }, function(err, docs) {
+  data.find({ date: { $gt: measureTreshold } }, function(err, docs) {
     var average = docs
       .map(doc => doc.value)
       .reduce((prev, curr) => prev + curr, 0) / docs.length;
@@ -103,7 +104,7 @@ function checkDisturbance(device) {
     }
 
     var lastReport = disturbance.findOne({ device: device }).sort({ date: -1 }).exec(function(err, doc) {
-      if (!doc || doc.date < begin) {
+      if (!doc || doc.date < reportTreshold) {
         server.publish({ topic: device + '/report', payload: { device: device, date: moment().unix() } });
         disturbance.insert({ device: device, date: moment().unix() });
         request('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI');
