@@ -62,11 +62,50 @@ function getTimestamps(data, sensor, chunkSize) {
     .map(item => moment.unix(item).format('HH:mm'));
 }
 
-getDataForTimestamp(data, begin, end) {
-  const values = data
-    .filter(d => d.date > begin)
-    .filter(d => d.date < end);
-    .map(d => d.value);
+function createChart(el) {
+  const ctx = el.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(1, 'rgba(240,152,25, 0.4)');
+  gradient.addColorStop(0, 'rgba(255,81,47, 1)');
 
-  return values.reduce((prev, curr) => prev + curr, 0) / values.length;
+  const sensor = el.getAttribute('data-sensor');
+
+  var data = getValues(window.data, sensor, 1)
+    .map(median)
+    .map(Math.round);
+
+  // var motionData = getValues(window.data, 'Motion', 50)
+  //   .map(chunk => chunk.filter(item => item > 0))
+  //   .map(chunk => chunk.length > 0 ? 1 : 0);
+
+  var data = {
+    labels: getTimestamps(window.data, sensor, 50),
+    datasets: [
+      {
+        data: data,
+        fillColor: gradient,
+        strokeColor: 'rgba(255,81,47, 1)',
+        pointColor: 'rgba(255,81,47, 1)',
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)",
+      },
+    ],
+  };
+
+  var chart = new Chart(ctx).Line(data, {
+    responsive: true,
+    scaleOverride:true,
+    scaleSteps: 15,
+    scaleStartValue:-20,
+    scaleStepWidth: 5,
+  });
 }
+
+function init() {
+  $('.chart').each(function(index, el) {
+    createChart(el);
+  });
+}
+
+export default init;
