@@ -6,6 +6,7 @@ var request = require('request');
 
 var data = require('./data');
 var devices = require('./devices');
+var disturbance = require('./disturbance');
 var mqtt_regex = require('mqtt-regex');
 
 var settings = {
@@ -74,11 +75,9 @@ messageHandlers = {
 
   '+device/input/+sensor': function(packet, client, params) {
     var payload = JSON.parse(packet.payload.toString());
+    var now = moment().unix();
 
-    if(payload.value > 50) {
-      request('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI');
-    }
-
+    checkDisturbance(client.id);
     data.insert({ sensor: params.sensor, value: payload.value, date: moment().unix(), device: client.id });
   },
 
@@ -89,5 +88,28 @@ messageHandlers = {
     devices.update({ _id: client.id }, { $set: { [path]: { value: value } } });
   },
 };
+
+function checkDisturbance(device) {
+  var end = moment().unix();
+  var begin = moment().subtract(30, 'minutes').unix();
+
+  data.find({ date: { $gt: begin } }, function(err, docs) {
+    var average = docs
+      .map(doc => doc.value)
+      .reduce((prev, curr) => prev + curr, 0) / docs.length;
+
+    if(average < 75) {
+      return false;
+    }
+
+    var lastReport = disturbance.findOne({ device: device }).sort({ date: -1 }).exec(function(err, doc) {
+      if (!doc || doc.date < begin) {
+        server.publish({ topic: device + '/report', payload: { device: device, date: moment().unix() } });
+        disturbance.insert({ device: device, date: moment().unix() });
+        request('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI');
+      }
+    });
+  });
+}
 
 module.exports = server;
