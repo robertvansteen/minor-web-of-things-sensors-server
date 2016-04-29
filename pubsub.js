@@ -91,7 +91,7 @@ messageHandlers = {
 
 function checkDisturbance(deviceId) {
   var now = moment().unix();
-  var measureTreshold = moment().subtract(10, 'minutes').unix();
+  var measureTreshold = moment().subtract(1, 'minutes').unix();
   var reportTreshold = moment().subtract(30, 'minutes').unix();
 
   data.find({ date: { $gt: measureTreshold } }, function(err, docs) {
