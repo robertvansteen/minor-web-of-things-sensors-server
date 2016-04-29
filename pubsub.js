@@ -95,7 +95,7 @@ function checkDisturbance(deviceId) {
   var measureTreshold = moment().subtract(1, 'minutes').unix();
   var reportTreshold = moment().subtract(30, 'minutes').unix();
 
-  data.find({ date: { $gt: measureTreshold } }, function(err, docs) {
+  data.find({ device: deviceId, date: { $gt: measureTreshold } }, function(err, docs) {
     var average = docs
       .map(doc => doc.value)
       .reduce((prev, curr) => prev + curr, 0) / docs.length;
