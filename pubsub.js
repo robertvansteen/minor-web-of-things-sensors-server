@@ -107,7 +107,7 @@ function checkDisturbance(deviceId) {
     var lastReport = disturbance.findOne({ device: deviceId }).sort({ date: -1 }).exec(function(err, doc) {
       if (!doc || doc.date < reportTreshold) {
         devices.findOne({ _id: deviceId }, function(err, device) {
-          server.publish({ topic: deviceId + '/report', payload: { device: deviceId, date: moment().unix() } });
+          server.publish({ topic: deviceId + '/report', payload: JSON.stringify({ device: deviceId, date: moment().unix() }) });
           disturbance.insert({ device: deviceId, date: moment().unix() });
           request
             .post('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI')
