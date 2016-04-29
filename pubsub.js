@@ -60,7 +60,8 @@ messageHandlers = {
   },
 
   '+device/register': function(packet, client) {
-    devices.update({ _id: client.id }, { $set: { last_ping: moment().unix() } }, { upsert: true });
+    var payload = JSON.parse(packet.payload.toString());
+    devices.update({ _id: client.id }, { $set: { label: payload.label, last_ping: moment().unix() } }, { upsert: true });
   },
 
   '+device/register/output': function(packet, client) {
@@ -105,12 +106,12 @@ function checkDisturbance(deviceId) {
 
     var lastReport = disturbance.findOne({ device: deviceId }).sort({ date: -1 }).exec(function(err, doc) {
       if (!doc || doc.date < reportTreshold) {
-        var device = devices.findOne({ _id: device }, function(err, doc) {
+        devices.findOne({ _id: deviceId }, function(err, device) {
           server.publish({ topic: deviceId + '/report', payload: { device: deviceId, date: moment().unix() } });
           disturbance.insert({ device: deviceId, date: moment().unix() });
           request
             .post('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI')
-            .form({ Value1: device.label });
+            .form({ value1: device.label });
         });
       }
     });
