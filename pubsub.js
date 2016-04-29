@@ -89,7 +89,7 @@ messageHandlers = {
   },
 };
 
-function checkDisturbance(device) {
+function checkDisturbance(deviceId) {
   var now = moment().unix();
   var measureTreshold = moment().subtract(10, 'minutes').unix();
   var reportTreshold = moment().subtract(30, 'minutes').unix();
@@ -103,11 +103,15 @@ function checkDisturbance(device) {
       return false;
     }
 
-    var lastReport = disturbance.findOne({ device: device }).sort({ date: -1 }).exec(function(err, doc) {
+    var lastReport = disturbance.findOne({ device: deviceId }).sort({ date: -1 }).exec(function(err, doc) {
       if (!doc || doc.date < reportTreshold) {
-        server.publish({ topic: device + '/report', payload: { device: device, date: moment().unix() } });
-        disturbance.insert({ device: device, date: moment().unix() });
-        request('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI');
+        var device = devices.findOne({ _id: device }, function(err, doc) {
+          server.publish({ topic: deviceId + '/report', payload: { device: deviceId, date: moment().unix() } });
+          disturbance.insert({ device: deviceId, date: moment().unix() });
+          request
+            .post('https://maker.ifttt.com/trigger/report/with/key/cTNM3M3pc7hZo91wRC8nxI')
+            .form({ Value1: device.label });
+        });
       }
     });
   });
