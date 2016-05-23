@@ -3,8 +3,8 @@
 <div class="list-group">
   {{#each devices}}
     <a href="/device/{{_id}}" class="list-group-item">
-      {{_id}}
-      
+      {{label}}
+
       {{#if online}}
         <span class="label label-success">Online</span>
       {{else}}
