@@ -1,6 +1,6 @@
 # Web of Things - Final exercise
 My idea for the final exercise of the course Web of Things was building an IoT temperature sensor that will adjust an addressable LED color strip depending on how warm it is.
-The higher temperature, the more red the strip will glow.
+The higher temperature, the more red the strip will glow. If the user desires, it can use the dashboard to disable the LED strip.
 
 To realise this idea, I’ve used my own IoT framework/network for  the most part, you can view the code of the [server](https://github.com/reauv/minor-web-of-things-sensors-server) and [device](https://github.com/reauv/minor-web-of-things-device) and [read how it works](https://github.com/reauv/minor-web-of-things-sensors-server/blob/master/README.md).
 
