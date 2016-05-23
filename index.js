@@ -50,11 +50,12 @@ app.post('/', function (req, res) {
 });
 
 app.get('/', function (req, res) {
-  var now = moment().unix();
-  var yesterday = moment().subtract(1, 'day').unix();
-
-  dataDB.find({ 'date': { $gte: yesterday } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
-    res.render('results', { data: docs, rawData: JSON.stringify(docs) });
+  devicesDB.find({}, function(error, docs) {
+    docs.map((doc) => {
+      doc.online = (moment().unix() < doc.last_ping + 600)
+      return doc;
+    });
+    res.render('dashboard', { devices: docs });
   });
 });
 
@@ -63,16 +64,6 @@ app.get('/raw', function (req, res) {
 
   dataDB.find({ 'date': { $gte: last } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
     res.render('raw', { data: docs, rawData: JSON.stringify(docs) });
-  });
-});
-
-app.get('/dashboard', function (req, res) {
-  devicesDB.find({}, function(error, docs) {
-    docs.map((doc) => {
-      doc.online = (moment().unix() < doc.last_ping + 600)
-      return doc;
-    });
-    res.render('dashboard', { devices: docs });
   });
 });
 

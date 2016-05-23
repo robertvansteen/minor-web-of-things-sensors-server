@@ -20,9 +20,9 @@ let onColorChange = _.debounce(event => {
 export default function() {
   var light = $('.js-checkbox').bootstrapSwitch();
   light.on('switchChange.bootstrapSwitch', function(event, state) {
-    const value = (state) ? 1 : 0;
+    const value = (state) ? 0 : 1;
     const topic = event.target.getAttribute('data-topic');
-    pubsub.publish(topic, JSON.stringify({ value: value }));
+    pubsub.publish(topic, JSON.stringify({ disabled: value }));
   });
 
   $('.button').click(function() {

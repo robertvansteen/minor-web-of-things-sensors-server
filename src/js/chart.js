@@ -74,10 +74,6 @@ function createChart(el) {
     .map(median)
     .map(Math.round);
 
-  // var motionData = getValues(window.data, 'Motion', 50)
-  //   .map(chunk => chunk.filter(item => item > 0))
-  //   .map(chunk => chunk.length > 0 ? 1 : 0);
-
   var data = {
     labels: getTimestamps(window.data, sensor, 50),
     datasets: [
