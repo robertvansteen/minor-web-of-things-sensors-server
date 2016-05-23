@@ -51,6 +51,9 @@ Here is a list of topics the server handles and the idea behind them.
 - `+device/input/+sensor` - With this topic the device can send data to the server. The `+sensor` wildcard represents the `id` of the sensor (specified in the register topic). The data must be an object containing a key/value pair of the `value`.
 - `+device/output/+id/status` - This topic is responsible for keeping track of the status of an output on a device. When the status of an output changes on a device, for example an LED is turned on, wether this is from local input or from external input, the device is supposed to let the server know the status is changed so it must publish a message with the `id` of the output and a message that has a `value` object with the status of the output.
 
+For the server I’ve used the popular MQTT package on NPM for setting up the MQTT broker with node.
+https://github.com/mqttjs/MQTT.js
+
 ### Client
 For the client I’ve developed a small C++ framework that can be re-used for all the devices and is very flexible and dynamic.
 The reason I’ve started working on this framework is because there was no easy way to work with multiple MQTT topics in a dynamic way without long and unmaintainable if statements. I wanted something where you can easily add I/O, and just add a file with a function that either runs when there is a relevant message published (in the case of output) or a function that is called every loop so that you can publish something (in the case of input).
@@ -64,5 +67,15 @@ This really saves a lot of time and tracking down wrong topic names.
 
 The same goes for the Output, for example there is a `Light.cpp` class that allows you to turn a LED on/off. When this class is register with an id of `led` for example, the `callback` method on the class will automatically be called when a message is received from the broker with a topic `output/led/set`. This also saves a ton of time.
 
+Of course I did not do all the work myself, so I have to give credits to _knolleary_ for developing an [MQTT library](https://github.com/knolleary/pubsubclient) that works with C++ on NodeMCU. Also thanks to _bblanchon_ for creating a [JSON library ](https://github.com/bblanchon/ArduinoJson) for Arduino.
+
 ## Conclusion
 I’ve developed both the server & the device framework to allow for easy future use. It’s something I’m definitely going to use when I work on an IoT project in the future. Setting up a single device in combination with a server is easy and you can hardcode a lot of stuff and it’ll work fine. But it’s really going to grind your gears when you add more _things_ to your network and it starts falling apart. The convention this IoT network uses prevents that and allows scaling.
+
+## Sources
+This research, documentation & code is written with help of the following sources:
+- https://en.wikipedia.org/wiki/MQTT
+- http://mqtt.org
+- http://www.hivemq.com/blog/mqtt-essentials-part-5-mqtt-topics-best-practices
+- https://github.com/mqttjs/MQTT.js
+- https://github.com/knolleary/pubsubclient
