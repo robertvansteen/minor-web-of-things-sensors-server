@@ -40,7 +40,7 @@ The server consists of two parts: an HTTP server for displaying data and control
 
 The HTTP server is not that interesting, it’s just a regular Node Express server that uses Handlebars behind the scenes to display the data & controls.
 
-The MQTT server is a bit more complex and it’s job is to keep track of the connected clients, information about them and the data. The data is stored with (NeDB)[https://github.com/louischatriot/nedb] in local files, so it doesn’t need an external database and is easy to setup.
+The MQTT server is a bit more complex and it’s job is to keep track of the connected clients, information about them and the data. The data is stored with [NeDB](https://github.com/louischatriot/nedb) in local files, so it doesn’t need an external database and is easy to setup.
 
 So how does the server manage multiple devices? The answer lies in the topic wildcards. These allow the server to respond in a dynamic way when a client publishes something.
 
