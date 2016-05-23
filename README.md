@@ -38,7 +38,7 @@ I’ve implemented this idea in 2 parts, the server and the client.
 ### Server
 The server consists of two parts: an HTTP server for displaying data and controls and a MQTT server that is responsible for communication between the devices.
 
-The HTTP server is not that interesting, it’s just a regular Node Express server that uses Handlebars behind the scenes to display the data & controls.
+The HTTP server is not that interesting, it’s just a regular Node Express server that uses Handlebars behind the scenes to display the data & controls in a dashboard. Depending on the type of the input/output the dashboard can show for example a chart, or a button. Right now this is a bit limited, but it’s built to be easily expanded. And in theory contributors could add custom implementations that other users should be able to use.
 
 The MQTT server is a bit more complex and it’s job is to keep track of the connected clients, information about them and the data. The data is stored with [NeDB](https://github.com/louischatriot/nedb) in local files, so it doesn’t need an external database and is easy to setup.
 
