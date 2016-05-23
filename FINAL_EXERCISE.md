@@ -1,7 +1,12 @@
 # Web of Things - Final exercise
-For the final exercise I’ve used my IoT network/framework to use DHT22 temperature sensor that reads the temperature and modifies the color of a addressable LED strip to a hue depending on the temperature. The warmer the temperature, the more red the strip will be.
+My idea for the final exercise of the course Web of Things was building an IoT temperature sensor that will adjust an addressable LED color strip depending on how warm it is.
+The higher temperature, the more red the strip will glow.
 
-For this exercise I made a small modification to the code that’s running on the server. This does the job of calculating the hue when the temperature changes and sends that to the client.
+To realise this idea, I’ve used my own IoT framework/network for  the most part, you can view the code of the [server](https://github.com/reauv/minor-web-of-things-sensors-server) and [device](https://github.com/reauv/minor-web-of-things-device) and [read how it works](https://github.com/reauv/minor-web-of-things-sensors-server/blob/master/README.md).
+
+For this exercise I made a few small modifications to the framework to accommodate for this project. Those changes/specifications are outlined below.
+
+I’ve made some changes to the code that’s running on the server. This does the job of calculating the hue when the temperature changes and sends that to the client.
 This code can be viewed [here](https://github.com/reauv/minor-web-of-things-sensors-server/blob/master/pubsub.js#L83-L91)
 
 The code on the client for changing the LED strip can be found [here](https://github.com/reauv/minor-web-of-things-device/blob/master/src/OutputDevices/Strip.cpp)
