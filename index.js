@@ -31,6 +31,10 @@ hbs.registerHelper('if_eq', function(a, b, opts) {
       return opts.inverse(this);
 });
 
+hbs.registerHelper('convert_unix', function(item, format) {
+  return moment.unix(item).format(format);
+});
+
 app.post('/', function (req, res) {
   console.log(req.body);
 
@@ -78,6 +82,14 @@ app.get('/device/:id', function (req, res) {
     dataDB.find({ 'date': { $gte: yesterday }, 'device': deviceId }).sort({'date': 1, 'sensor': 1}).exec(function(error, data) {
       res.render('device', { device, data });
     });
+  });
+});
+
+app.get('/device/:id/raw', function (req, res) {
+  var last = moment().subtract(4, 'hour').unix();
+
+  dataDB.find({}).sort({'date': 1}).limit(25).exec(function(error, docs) {
+    res.render('raw', { data: docs });
   });
 });
 

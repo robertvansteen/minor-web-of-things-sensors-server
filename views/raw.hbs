@@ -1,46 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sensor data</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="container">
-      <h1>Sensor data</h1>
-      <h2>Raw data</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Sensor</th>
-              <th>Value</th>
-              <th>Device</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each data}}
-              <tr>
-                <td>{{sensor}}</td>
-                <td>{{value}}</td>
-                <td>{{device}}</td>
-                <td>{{date}}</td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-    </div>
+<h1>{{device.id}}</h1>
+<h2>Latest data</h2>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.1.1/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/lodash/4.8.2/lodash.min.js"></script>
-    <script>
-      var raw = {{{rawData}}};
-    </script>
-    <script src="/bundle.js"></script>
-  </body>
-</html>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Sensor</th>
+        <th>Value</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+        <tr>
+          <td>{{sensor}}</td>
+          <td>{{value}}</td>
+          <td>{{convert_unix date "MMMM Do YYYY, HH:MM"}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

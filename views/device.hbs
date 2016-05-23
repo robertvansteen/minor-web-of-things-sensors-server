@@ -16,12 +16,14 @@
   </div>
 {{/each}}
 
-<h2>Input</h2>
+<h2>Input - Last 24 hours</h2>
 {{#each device.input}}
   {{label}}
-  <canvas class="chart" data-sensor="{{id}}"></div>
+  <canvas class="chart" data-sensor="{{id}}"></canvas>
 {{/each}}
 
+<h2>Raw data</h2>
+<a href="/device/{{device._id}}/raw">View here</a>
 
 <script>
   var device = {{{json device}}};
