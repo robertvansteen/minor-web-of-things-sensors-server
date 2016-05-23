@@ -46,11 +46,12 @@ function getValues(data, sensor, chunkSize) {
  *
  * @param  {Array} data
  * @param  {String} sensor
- * @param  {Integer} chunkSize
+ * @param  {Integer} size
  *
  * @return {Array}
  */
-function getTimestamps(data, sensor, chunkSize) {
+function getTimestamps(data, sensor, size) {
+  const chunkSize = data.length / size;
   const values = data
     .filter(item => item.sensor === sensor)
     .map(item => item.date);
@@ -59,7 +60,7 @@ function getTimestamps(data, sensor, chunkSize) {
 
   return chunks
     .map(chunk => chunk.reduce((prev, curr) => prev + curr, 0) / chunk.length)
-    .map(item => moment.unix(item).format('HH:mm'));
+    .map(item => moment.unix(item).format('M/d - HH:mm'));
 }
 
 function createChart(el) {
@@ -75,7 +76,7 @@ function createChart(el) {
     .map(Math.round);
 
   var data = {
-    labels: getTimestamps(window.data, sensor, 50),
+    labels: getTimestamps(window.data, sensor, 20),
     datasets: [
       {
         data: data,

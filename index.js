@@ -63,23 +63,15 @@ app.get('/', function (req, res) {
   });
 });
 
-app.get('/raw', function (req, res) {
-  var last = moment().subtract(4, 'hour').unix();
-
-  dataDB.find({ 'date': { $gte: last } }).sort({'date': 1, 'sensor': 1}).exec(function(error, docs) {
-    res.render('raw', { data: docs, rawData: JSON.stringify(docs) });
-  });
-});
-
 app.get('/device/:id', function (req, res) {
   var deviceId = req.params.id;
   var now = moment().unix();
-  var yesterday = moment().subtract(1, 'day').unix();
+  var lastWeek = moment().subtract(1, 'week').unix();
 
   devicesDB.findOne({ _id: deviceId }, function(error, device) {
     if(!device) return res.send('404');
 
-    dataDB.find({ 'date': { $gte: yesterday }, 'device': deviceId }).sort({'date': 1, 'sensor': 1}).exec(function(error, data) {
+    dataDB.find({ 'date': { $gte: lastWeek }, 'device': deviceId }).sort({'date': 1, 'sensor': 1}).exec(function(error, data) {
       res.render('device', { device, data });
     });
   });
